@@ -18,7 +18,7 @@ class Swipe extends Component {
     onSwipeRight: () => {},
     onSwipeLeft: () => {},
     keyProp: 'id'
-  }
+  };
 
   constructor(props) {
     super(props);

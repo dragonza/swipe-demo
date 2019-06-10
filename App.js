@@ -30,13 +30,6 @@ class App extends Component {
   };
 
   renderCards(job) {
-    const initialRegion = {
-      longitude: job.longitude,
-      latitude: job.latitude,
-      latitudeDelta: 0.045,
-      longitudeDelta: 0.02
-    };
-
     return (
       <Card title={job.jobtitle} titleStyle={{ fontSize: 14 }}>
         <View style={{ height: 200 }}>
