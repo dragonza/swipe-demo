@@ -1,22 +1,42 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions } from 'react-native';
+import { View, Text, PanResponder, Dimensions, Animated } from 'react-native';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SWIPE_THRESHOLD = 0.25 * SCREEN_WIDTH;
 const SWIPE_OUT_DURATION = 250;
 
 class Swipe extends Component {
+  constructor(props) {
+    super(props);
+    this.position = new Animated.ValueXY();
+
+    this._panResponder = PanResponder.create({
+      // Ask to be the responder:
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: (evt, gesture) => {
+        this.position.setValue({ x: gesture.dx, y: gesture.dy });
+      },
+      onPanResponderRelease: (evt, gesture) => {
+        // The user has released all touches while this view is the
+        // responder. This typically means a gesture has succeeded
+      }
+    });
+  }
   state = {
     index: 0
   };
 
-  renderCardItem = (item) => {
-    if (! this.props.data.length) {
+  renderCardItem = item => {
+    if (!this.props.data.length) {
       return this.props.renderNoMoreCards();
     }
     return (
-      <View key={item.jobId}>
+      <Animated.View
+        style={this.position.getLayout()}
+        key={item.jobId}
+        {...this._panResponder.panHandlers}
+      >
         {this.props.renderCard(item)}
-      </View>
+      </Animated.View>
     );
   };
 
@@ -29,7 +49,6 @@ class Swipe extends Component {
   }
 }
 
-
 const styles = {
   detailWrapper: {
     flexDirection: 'row',
@@ -39,7 +58,7 @@ const styles = {
   cardStyle: {
     position: 'absolute',
     width: SCREEN_WIDTH
-  },
+  }
 };
 
 export default Swipe;
