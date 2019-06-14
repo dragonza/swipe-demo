@@ -16,12 +16,25 @@ class Swipe extends Component {
         this.position.setValue({ x: gesture.dx, y: gesture.dy });
       },
       onPanResponderRelease: (evt, gesture) => {
+        if (gesture.dx > SWIPE_THRESHOLD) {
+          // this.forceSwipe('right');
+        } else if (gesture.dx < -SWIPE_THRESHOLD) {
+          // this.forceSwipe('left');
+        } else {
+          this.resetPosition();
+        }
         // The user has released all touches while this view is the
         // responder. This typically means a gesture has succeeded
       }
     });
 
     this.state = { index: 0 }
+  }
+
+  resetPosition() {
+    Animated.spring(this.position, {
+      toValue: { x: 0, y: 0 }
+    }).start();
   }
 
   getCardStyle() {
