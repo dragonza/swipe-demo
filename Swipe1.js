@@ -20,10 +20,23 @@ class Swipe extends Component {
         // responder. This typically means a gesture has succeeded
       }
     });
+
+    this.state = { index: 0 }
   }
-  state = {
-    index: 0
-  };
+
+  getCardStyle() {
+    const { position } = this;
+    const rotate = position.x.interpolate({
+      inputRange: [-SCREEN_WIDTH * 1.5, 0, SCREEN_WIDTH * 1.5],
+      outputRange: ['-120deg', '0deg', '120deg']
+    });
+
+    return {
+      ...position.getLayout(),
+      transform: [{ rotate }]
+    };
+  }
+
 
   renderCardItem = item => {
     if (!this.props.data.length) {
@@ -31,7 +44,7 @@ class Swipe extends Component {
     }
     return (
       <Animated.View
-        style={this.position.getLayout()}
+        style={this.getCardStyle()}
         key={item.jobId}
         {...this._panResponder.panHandlers}
       >
