@@ -5,6 +5,12 @@ const SWIPE_THRESHOLD = 0.25 * SCREEN_WIDTH;
 const SWIPE_OUT_DURATION = 250;
 
 class Swipe extends Component {
+  static defaultProps = {
+    onSwipeRight: () => {},
+    onSwipeLeft: () => {},
+    keyProp: 'id'
+  };
+
   constructor(props) {
     super(props);
     this.position = new Animated.ValueXY();
@@ -17,18 +23,33 @@ class Swipe extends Component {
       },
       onPanResponderRelease: (evt, gesture) => {
         if (gesture.dx > SWIPE_THRESHOLD) {
-          // this.forceSwipe('right');
+          this.forceSwipe('right');
         } else if (gesture.dx < -SWIPE_THRESHOLD) {
-          // this.forceSwipe('left');
+          this.forceSwipe('left');
         } else {
           this.resetPosition();
         }
-        // The user has released all touches while this view is the
-        // responder. This typically means a gesture has succeeded
       }
     });
 
-    this.state = { index: 0 }
+    this.state = { index: 0 };
+  }
+
+  onSwipeComplete(direction) {
+    const { onSwipeLeft, onSwipeRight, data } = this.props;
+    const item = data[this.state.index];
+
+    direction === 'right' ? onSwipeRight(item) : onSwipeLeft(item);
+    this.state.position.setValue({ x: 0, y: 0 });
+    this.setState({ index: this.state.index + 1 });
+  }
+
+  forceSwipe(direction) {
+    const x = direction === 'right' ? SCREEN_WIDTH : -SCREEN_WIDTH;
+    Animated.timing(this.position, {
+      toValue: { x, y: 0 },
+      duration: SWIPE_OUT_DURATION
+    }).start(() => this.onSwipeComplete(direction));
   }
 
   resetPosition() {
@@ -50,12 +71,11 @@ class Swipe extends Component {
     };
   }
 
-
-  renderCardItem = item => {
+  renderCardItem = (item, i) => {
     if (!this.props.data.length) {
       return this.props.renderNoMoreCards();
     }
-    return (
+    return i === 0 ? (
       <Animated.View
         style={this.getCardStyle()}
         key={item.jobId}
@@ -63,6 +83,8 @@ class Swipe extends Component {
       >
         {this.props.renderCard(item)}
       </Animated.View>
+    ) : (
+      <View key={item.jobId}>{this.props.renderCard(item)}</View>
     );
   };
 

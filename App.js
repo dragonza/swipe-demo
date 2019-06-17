@@ -72,7 +72,7 @@ class App extends Component {
         <Swipe
           onSwipeRight={this.handleLikedJob}
           onSwipeLeft={this.handlePassedJob}
-          keyProp="jobkey"
+          keyProp="jobId"
           data={jobs}
           renderCard={this.renderCards}
           renderNoMoreCards={this.renderNoMoreCards}
