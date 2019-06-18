@@ -53,7 +53,7 @@ class App extends Component {
     return (
       <Card title="No More cards">
         <Button
-          title="Back To Map"
+          title="Do something"
           large
           icon={{ name: 'my-location' }}
           backgroundColor="#03A9F4"
